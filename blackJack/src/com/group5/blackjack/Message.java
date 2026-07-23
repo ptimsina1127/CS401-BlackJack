@@ -1,3 +1,4 @@
+package com.group5.blackjack;
 
 import java.io.Serializable;
 

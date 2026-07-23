@@ -1,3 +1,5 @@
+package com.group5.blackjack;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,8 +77,10 @@ public class Dealer {
 	}
 
 	public boolean peek() {
-		int handValue = calculateHandTotal();
-		return handValue == 1 || handValue >= 10;
+		if (hand.isEmpty()) return false;
+		Card faceUpCard = hand.get(0);
+		int value = faceUpCard.getCardValue();
+		return value == 1 || value == 10;
 	}
 
 	public void clearHand() {
@@ -84,44 +88,24 @@ public class Dealer {
 	}
 	
 	
-	// Prints all cards in the players hand.
 	public String toStringDealersHand() {
-		String playersHand = null;
-		
-		// For every card in the hand add it to the string.
-		//
-		// Card of Suit, Card of Suit, ... , Card of Suit
-		//
-		Card lastCard;
-		
-		if(hand.size() < 1) {
+		if (hand.size() < 1) {
 			return "";
 		}
-		
-		// if the size of the hand is 2 or more
-		// fixes out of bounds.
-		if(hand.size() > 1) {
-			lastCard = hand.get(hand.size() -1);
-		}
-		
-		// if only one card
-		else {
-			lastCard = hand.get(0);
+
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < hand.size(); i++) {
+			if (i > 0) {
+				sb.append(",");
+			}
+			sb.append(hand.get(i).toString());
 		}
 
-		
-		for(Card c : hand) {
-			
-			// If on the last card don't print with a comma.
-			if(c.equals(lastCard) ) {
-				playersHand += c.toString();
-			}
-			
-			playersHand += c.toString() + ",";
-			
-		}
-		
-		return playersHand;
+		return sb.toString();
+	}
+
+	public void setHasBlackJack(boolean hasBlackJack) {
+		this.hasBlackJack = hasBlackJack;
 	}
 	
 }

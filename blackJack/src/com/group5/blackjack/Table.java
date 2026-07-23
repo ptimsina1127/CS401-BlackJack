@@ -1,6 +1,7 @@
+package com.group5.blackjack;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Table {
 	Dealer dealer;
@@ -12,20 +13,18 @@ public class Table {
 		this.dealer = dealer;
 		deck = new PlayingDeck(3);
 
-		// Getting a null error here when opening a game.
-		// Null error when iterating
 		this.players = new ArrayList<Player>();
 		for (Player player : players) {
 			this.players.add(new Player(player.getPlayerName(), player.getPlayerFunds()));
 		}
-
+		payout = 6.0 / 5.0;
 	}
 
 	public Table() {
 		this.dealer = null;
 		deck = new PlayingDeck(3);
 		players = new ArrayList<>();
-		payout = 6/5;
+		payout = 6.0 / 5.0;
 	}
 
 	public String getPlayingDeck() {
@@ -41,12 +40,12 @@ public class Table {
 	}
 
 	public void dealCards() {
-
-		for (Player player : players) {
-			addCardToPlayerHand(player, deal());
+		for (int i = 0; i < 2; i++) {
+			for (Player player : players) {
+				addCardToPlayerHand(player, deal());
+			}
+			addCardToDealerHand(dealer, deal());
 		}
-
-		addCardToDealerHand(dealer, deal());
 	}
 
 	public Card deal() {
@@ -55,29 +54,23 @@ public class Table {
 
 	public void addCardToPlayerHand(Player player, Card card) {
 		player.getPlayerHand().add(card);
-		System.out.println("Player, " + player.getPlayerName() + ", has Hand: " + player.getPlayerHand().toString());
 	}
 
 	public void addCardToDealerHand(Dealer dealer, Card card) {
 		dealer.getDealerHand().add(card);
-		System.out.println("Dealer, " + dealer.getDealerName() + ", has Hand: " + dealer.getDealerHand().toString());
 	}
 
 	public void clearAllHands() {
 		for (Player player : players) {
-			clearPlayerHand(player);
+			player.clearHand();
 		}
-
-		clearDealerHand(dealer);
+		if (dealer != null) {
+			dealer.clearHand();
+		}
 	}
 
 	public void clearPlayerHand(Player player) {
-		Random rand = new Random();
-		for (int i = 0; i < player.getPlayerHand().size(); i++) {
-			Deck selectedDeck = deck.playingDeck.get(rand.nextInt((deck.playingDeck.size() - 0) + 1) + 0);
-			selectedDeck.cards.add(player.getPlayerHand().get(i));
-			player.getPlayerHand().remove(i);
-		}
+		player.clearHand();
 	}
 
 	public static int pickRandomIndex(int Min, int Max) {
@@ -85,11 +78,6 @@ public class Table {
 	}
 
 	public void clearDealerHand(Dealer dealer) {
-		Random rand = new Random();
-		for (int i = 0; i < dealer.getDealerHand().size(); i++) {
-			Deck selectedDeck = deck.playingDeck.get(rand.nextInt((deck.playingDeck.size() - 0) + 1) + 0);
-			selectedDeck.cards.add(dealer.getDealerHand().get(i));
-			dealer.getDealerHand().remove(i);
-		}
+		dealer.clearHand();
 	}
 }
