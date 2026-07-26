@@ -53,7 +53,7 @@ public class BlackjackGUI {
 
 	private static final int CARD_WIDTH = 90;
 	private static final int CARD_HEIGHT = 130;
-	private static final String CARDS_DIR = "Cards/";
+	private static final String CARDS_DIR = "assets/cards/";
 	private static final Map<String, ImageIcon> imageCache = new HashMap<>();
 
 	public BlackjackGUI() {

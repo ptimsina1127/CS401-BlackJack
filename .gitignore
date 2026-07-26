@@ -1,5 +1,33 @@
-/.metadata/
-blackJack/.project
-blackJack/src/TesterClient.java
-blackJack/src/GUITest.java
-blackJack/src/GUITest.java
+# Compiled class files
+*.class
+
+# Eclipse/STS project files
+.classpath
+.project
+.settings/
+
+# Build output
+bin/
+build/
+
+# Runtime data (keep in repo for default accounts)
+# players.txt, dealers.txt, casinoFunds.txt are tracked
+
+# Server logs
+# ServerLogs.txt is tracked
+
+# R session files
+.Rhistory
+
+# Backup files
+*.drawio.bkp
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+*.iml
+.idea/
+.vscode/
