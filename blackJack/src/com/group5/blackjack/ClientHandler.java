@@ -418,7 +418,11 @@ public class ClientHandler implements Runnable {
 
 		if(message.getType() == Type.Bet) {
 			usersGame.getTable().shuffleCards();
-			usersGame.getBets(message.getText());
+			String betError = usersGame.getBets(message.getText());
+			if (betError != null) {
+				updateMessageFailed(message, betError);
+				return;
+			}
 			usersGame.getTable().dealCards();
 			
 			boolean dealerBlackjack = usersGame.checkBlackjack();

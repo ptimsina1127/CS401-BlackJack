@@ -48,6 +48,7 @@ public class BlackjackGUI {
 	private JButton placeBetButton;
 
 	private String currentGameId;
+	private double currentFunds;
 	private boolean isDealer;
 
 	private static final int CARD_WIDTH = 90;
@@ -527,7 +528,19 @@ public class BlackjackGUI {
 		placeBetButton.addActionListener(e -> {
 			try {
 				double amount = Double.parseDouble(betField.getText().trim());
-				if (amount > 0 && currentGameId != null) {
+				if (amount <= 0) {
+					onError("Bet amount must be greater than zero.");
+					return;
+				}
+				if (currentFunds <= 0) {
+					onError("No funds remaining. Go back and add funds to continue playing.");
+					return;
+				}
+				if (amount > currentFunds) {
+					onError("Insufficient funds. You have $" + String.format("%.2f", currentFunds) + ".");
+					return;
+				}
+				if (currentGameId != null) {
 					client.sendBet(currentGameId, amount);
 					betField.setText("");
 				}
@@ -967,8 +980,8 @@ public class BlackjackGUI {
 		gameResultLabel.setText("");
 		hitButton.setEnabled(false);
 		standButton.setEnabled(false);
-		placeBetButton.setEnabled(true);
 		client.sendCheckFunds();
+		updateBetButtonState();
 	}
 
 	public void onGameLeft(String message) {
@@ -979,8 +992,10 @@ public class BlackjackGUI {
 	public void onFundsReceived(String funds) {
 		try {
 			double amount = Double.parseDouble(funds);
+			currentFunds = amount;
 			fundsLabel.setText(String.format("Funds: $%.2f", amount));
 			playerFundsLabel.setText(String.format("Funds: $%.2f", amount));
+			updateBetButtonState();
 		} catch (NumberFormatException e) {
 			fundsLabel.setText("Funds: " + funds);
 		}
@@ -1021,6 +1036,7 @@ public class BlackjackGUI {
 				case "PLAYER_FUNDS":
 					playerFundsLabel.setText("Funds: $" + value);
 					fundsLabel.setText("Funds: $" + value);
+					try { currentFunds = Double.parseDouble(value); } catch (NumberFormatException ignored) {}
 					break;
 				case "STATUS":
 					statusLabel.setText(value);
@@ -1040,14 +1056,23 @@ public class BlackjackGUI {
 				case "BET_PHASE":
 					hitButton.setEnabled(false);
 					standButton.setEnabled(false);
-					placeBetButton.setEnabled(true);
+					updateBetButtonState();
 					break;
 				case "ROUND_OVER":
 					hitButton.setEnabled(false);
 					standButton.setEnabled(false);
-					placeBetButton.setEnabled(true);
+					updateBetButtonState();
 					break;
 			}
+		}
+	}
+
+	private void updateBetButtonState() {
+		if (currentFunds <= 0) {
+			placeBetButton.setEnabled(false);
+			statusLabel.setText("No funds! Go back and add funds to continue playing.");
+		} else {
+			placeBetButton.setEnabled(true);
 		}
 	}
 

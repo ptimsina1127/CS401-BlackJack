@@ -95,7 +95,7 @@ public class Game {
 		}
 	}
 
-	public void getBets(String message) {
+	public String getBets(String message) {
 		String[] serverMessages = message.split("\n");
 		for (String playerBet : serverMessages) {
 			String[] playerStats = playerBet.split(":");
@@ -105,13 +105,21 @@ public class Game {
 
 			for (Player p : table.players) {
 				if (p.getPlayerName().equals(playerName)) {
-					if (betAmount > 0 && betAmount <= p.getPlayerFunds()) {
-						p.setBet(betAmount);
+					if (p.getPlayerFunds() <= 0) {
+						return "No funds remaining. Go back and add funds to continue playing.";
 					}
+					if (betAmount <= 0) {
+						return "Bet amount must be greater than zero.";
+					}
+					if (betAmount > p.getPlayerFunds()) {
+						return "Insufficient funds. You have $" + String.format("%.2f", p.getPlayerFunds()) + ".";
+					}
+					p.setBet(betAmount);
 					break;
 				}
 			}
 		}
+		return null;
 	}
 
 	public boolean checkBlackjack() {
